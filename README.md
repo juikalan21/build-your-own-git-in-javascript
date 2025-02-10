@@ -1,54 +1,34 @@
+#Understanding the .git repo
 
-// three type of objects - blob, trees, commits
-// 1. blobs - actual data of how our file is changed - each git blob is stored in a separte file
-//git object storage git objects are stored in .object directory
-// in .git directory there are -objects/ -refs/ -HEAD
+$ tree .git
 
-//git at basic level is just a bunch of text files linked to each other by filenames
+.git
+├── config
+├── HEAD
+├── hooks
+│   └── prepare-commit-msg.msample
+├── objects
+│   ├── info
+│   └── pack
+└── refs
+    ├── heads
+    └── tags
 
-//git init just creates a empty git folder
-// so whats inside git folder - 
-// $ tree .git (tree structure)
+1. config is a text file that contains your git configuration for the current repo. If you look into it, you would see some basic settings for you repo like the author, filemode etc.
+   
+2. HEAD contains the current head of the repo. Depending on what you have set your "default" branch to be, it will be refs/heads/master or refs/heads/main or whatever else you had set to. As you might have guessed, this is pointing to refs/heads folder that you can see below, and into a file called master which does not exist as of now. This file master will only show up after you make your first commit.
 
-// .git
-// ├── config
-// ├── HEAD
-// ├── hooks
-// │   └── prepare-commit-msg.msample
-// ├── objects
-// │   ├── info
-// │   └── pack
-// └── refs
-//     ├── heads
-//     └── tags
+3. hooks contain any scripts that can be run before/after git does anything. I have written another blog here which goes a bit more into how git hooks work.
 
-//config is a text file that contains your git configuration for the current repo. If you look into it, you would see some basic settings for you repo like the author, filemode etc. contains all config of a repo
+4. objects contains the git objects, ie the data about the files, commits etc in your repo. We will go in depth into this in this blog.
 
-//cat config - it will show all branches information
+5. refs as we previously mentioned, stores references(pointers). refs/heads contains pointers to branches and refs/tags contains pointers to tags
 
-
-
-//.git folder - it has objects - so in that object there are commits and commits has a hash value - suppose commit has hash 1234567890 then it will create a folder/directory of first two characters - 12 here and that folder has a file named after the remaining characters 12/34567890 which has compressed data of the commit. so we use cat-file <hash> command to uncompress the data and be able ro read it
-
-//head - keeps teack of the current branch
-//cat HEAD - will show in which branch we currently are
-
-//hooks contain any scripts that can be run before/after git does anything. eg husky 
-
-//objects - objects contain the git objects, ie the data about the files, commits etc in your repo
-
-//refs are basically like tags
-
-//git cat-file -p "commit-message" - so we have to make our cat-file command who will go in the hash folder -12 then read the contents of the file 34567890, uncompress it and return it in console log
-
-//To implement this, you'll need to:
-
-// Read the contents of the blob object file from the .git/objects directory
-// Decompress the contents using Zlib
-// Extract the actual "content" from the decompressed data
-// Print the content to stdout
-//hence now we are done with cat-file
-
-//next is to create a blob object
-//till now we were reading the object - in this step we will create a object
+#cat-file
+Overview:
+1. navigate to .git/objects/commitSHA[0..2]
+2. read the file inside the directory git/objects/commitSHA[0..2]/commitSHA[2..end]
+3. de-compress
+4. output
+   
 
