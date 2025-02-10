@@ -1,1 +1,54 @@
 
+// three type of objects - blob, trees, commits
+// 1. blobs - actual data of how our file is changed - each git blob is stored in a separte file
+//git object storage git objects are stored in .object directory
+// in .git directory there are -objects/ -refs/ -HEAD
+
+//git at basic level is just a bunch of text files linked to each other by filenames
+
+//git init just creates a empty git folder
+// so whats inside git folder - 
+// $ tree .git (tree structure)
+
+// .git
+// ├── config
+// ├── HEAD
+// ├── hooks
+// │   └── prepare-commit-msg.msample
+// ├── objects
+// │   ├── info
+// │   └── pack
+// └── refs
+//     ├── heads
+//     └── tags
+
+//config is a text file that contains your git configuration for the current repo. If you look into it, you would see some basic settings for you repo like the author, filemode etc. contains all config of a repo
+
+//cat config - it will show all branches information
+
+
+
+//.git folder - it has objects - so in that object there are commits and commits has a hash value - suppose commit has hash 1234567890 then it will create a folder/directory of first two characters - 12 here and that folder has a file named after the remaining characters 12/34567890 which has compressed data of the commit. so we use cat-file <hash> command to uncompress the data and be able ro read it
+
+//head - keeps teack of the current branch
+//cat HEAD - will show in which branch we currently are
+
+//hooks contain any scripts that can be run before/after git does anything. eg husky 
+
+//objects - objects contain the git objects, ie the data about the files, commits etc in your repo
+
+//refs are basically like tags
+
+//git cat-file -p "commit-message" - so we have to make our cat-file command who will go in the hash folder -12 then read the contents of the file 34567890, uncompress it and return it in console log
+
+//To implement this, you'll need to:
+
+// Read the contents of the blob object file from the .git/objects directory
+// Decompress the contents using Zlib
+// Extract the actual "content" from the decompressed data
+// Print the content to stdout
+//hence now we are done with cat-file
+
+//next is to create a blob object
+//till now we were reading the object - in this step we will create a object
+
