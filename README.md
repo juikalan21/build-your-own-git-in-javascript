@@ -1,34 +1,69 @@
-#Understanding the .git repo
+# Git Implementation Documentation
 
-$ tree .git
+## Overview
+This document explains the implementation of basic Git functionality, focusing on three core object types: blobs, trees, and commits.
 
-.git
-├── config
-├── HEAD
-├── hooks
-│   └── prepare-commit-msg.msample
-├── objects
-│   ├── info
-│   └── pack
-└── refs
-    ├── heads
-    └── tags
+## Git Object Structure
+Git objects are stored in `.git/objects` directory with the following characteristics:
+- Blobs store actual file data changes
+- Each object is stored in a separate file
+- File naming: first 2 characters of hash form directory name, remaining characters form filename
 
-1. config is a text file that contains your git configuration for the current repo. If you look into it, you would see some basic settings for you repo like the author, filemode etc.
-   
-2. HEAD contains the current head of the repo. Depending on what you have set your "default" branch to be, it will be refs/heads/master or refs/heads/main or whatever else you had set to. As you might have guessed, this is pointing to refs/heads folder that you can see below, and into a file called master which does not exist as of now. This file master will only show up after you make your first commit.
+## Git Directory Structure
+```
+.git/
+├── config          # Repository configuration
+├── HEAD           # Points to current branch
+├── hooks/         # Pre/post action scripts
+│   └── prepare-commit-msg.sample
+├── objects/       # Git objects storage
+│   ├── info/
+│   └── pack/
+└── refs/          # References and tags
+    ├── heads/
+    └── tags/
+```
 
-3. hooks contain any scripts that can be run before/after git does anything. I have written another blog here which goes a bit more into how git hooks work.
+## Key Components
 
-4. objects contains the git objects, ie the data about the files, commits etc in your repo. We will go in depth into this in this blog.
+### Config File
+- Contains repository configuration
+- Stores settings like author, filemode
+- Includes branch information
 
-5. refs as we previously mentioned, stores references(pointers). refs/heads contains pointers to branches and refs/tags contains pointers to tags
+### HEAD File
+- Tracks current branch
+- Viewable via `cat HEAD`
 
-#cat-file
-Overview:
-1. navigate to .git/objects/commitSHA[0..2]
-2. read the file inside the directory git/objects/commitSHA[0..2]/commitSHA[2..end]
-3. de-compress
-4. output
-   
+### Objects Directory
+- Stores Git objects (commits, blobs)
+- Uses hash-based organization
+- Example: hash `1234567890` stored as `12/34567890`
+
+## Implementation Details
+
+### Reading Objects (cat-file)
+To implement `cat-file`:
+1. Read blob object from `.git/objects`
+2. Decompress using Zlib
+3. Extract content from decompressed data
+4. Print to stdout
+
+### Creating Objects (hash-object)
+Blob object structure:
+```
+blob <size>\0<content>
+```
+where:
+- `<size>`: content size in bytes
+- `\0`: null byte
+- `<content>`: file content
+
+Implementation steps:
+1. Accept filepath input
+2. Calculate SHA hash
+3. If `-w` flag present:
+   - Create directory using first 2 hash chars
+   - Write remaining chars as filename
+4. Output 40-character SHA hash
 
